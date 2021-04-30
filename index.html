@@ -122,6 +122,8 @@ var CONTROLS = function () {
     dy=speed;
   } 
   if (key.isDown('R')){
+    isGrabbed = false
+    text.setText(" ")
     player.setPosition(p(220, 120))
     player.setSizeC(s(29, 35))
     prey.setPosition(p(500, 200))
