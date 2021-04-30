@@ -26,6 +26,13 @@ var text = game.newTextObject({
   size: 24,
   color: "lime"
 })
+var info = game.newTextObject({
+  y: 675,
+  x: 300,
+  text:"Controls: Move: WASD/arrows; Swallow prey: G; Reload game: R",
+  color: 'pink',
+  size: 24,
+})
 
 var player = game.newRectObject({ 
      x :220, 
@@ -170,7 +177,7 @@ game.newLoop('myGame', function () {
     isGrabbed = true
   }
   player.move(p(dx, dy));
-  rect1.draw(); rect2.draw(); rect3.draw();  rect4.draw(); rect5.draw(); rect6.draw(); rect7.draw(); player.draw(); prey.draw(); text.draw();
+  rect1.draw(); rect2.draw(); rect3.draw();  rect4.draw(); rect5.draw(); rect6.draw(); rect7.draw(); player.draw(); prey.draw(); text.draw(); info.draw()
 })
 
 game.setLoop('myGame');
