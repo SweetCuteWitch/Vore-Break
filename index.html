@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+ <meta name="viewport" content="width=device-width,user-scalable=no"/>
+ <title></title>
+</head>
+<body style = "background-color: black;">
+
+<script type="text/javascript" src="pointjs_0.2.0.9.js"></script>
+
+<script type="text/javascript">
+
+var pjs = new PointJS(1000, 700, {backgroundColor: '#000'})
+var game = pjs.game;
+var key = pjs.keyControl;
+key.initKeyControl();
+var p = pjs.vector.point;
+var s = pjs.vector.size;
+var isGrabbed = false;
+
+var text = game.newTextObject({
+  x: 300,
+  y: 20,
+  text: " ",
+  size: 24,
+  color: "lime"
+})
+
+var player = game.newRectObject({ 
+     x :220, 
+     y : 120, 
+     w : 29, 
+     h : 35, 
+     fillColor : "#2ab7a0"
+});
+var prey = game.newRectObject({
+  x: 500,
+  y: 200,
+  w: 20,
+  h: 28,
+  fillColor : "#a519a2"
+})
+
+
+var rect1 = game.newRectObject({ 
+     x : 0, 
+     y : 0, 
+     w : 1, 
+     h : 700, 
+     fillColor : "yellow", 
+   });
+var rect2 = game.newRectObject({ 
+  x : 0, 
+  y : 0, 
+  w : 1000, 
+  h : 1, 
+  fillColor : "yellow", 
+});
+var rect3 = game.newRectObject({ 
+  x : 0, 
+  y : 699,
+  w : 1000, 
+  h : 1, 
+  fillColor : "yellow", 
+});
+var rect4 = game.newRectObject({ 
+     x : 999, 
+     y : 0, 
+     w : 1, 
+     h : 700, 
+     fillColor : "yellow", 
+   }); 
+var rect5 = game.newRectObject({ 
+  x : 190, 
+  y : 80, 
+  w : 3, 
+  h : 150, 
+  fillColor : "yellow", 
+}); 
+var rect6 = game.newRectObject({ 
+  x : 290, 
+  y : 80, 
+  w : 3, 
+  h : 150, 
+  fillColor : "yellow", 
+});
+var rect7 = game.newRectObject({ 
+  x : 190, 
+  y : 230, 
+  w : 103, 
+  h : 3, 
+  fillColor : "yellow", 
+});
+
+
+var rect = [rect1, rect2, rect3, rect4, rect5, rect6, rect7];
+
+
+/*Controlls*/
+var speed=2;
+
+var CONTROLS = function () {
+  dx=dy=0;
+  if (key.isDown('D') || key.isDown('RIGHT') ) {
+    dx=speed;
+  } 
+  if ((key.isDown('A') || key.isDown('LEFT'))) {
+    dx=-speed;
+  } 
+  if (key.isDown('W') || key.isDown('UP') ) {
+    dy=-speed;
+  } 
+  if (key.isDown('S') || key.isDown('DOWN') ) {
+    dy=speed;
+  } 
+  if (key.isDown('R')){
+    player.setPosition(p(220, 120))
+    player.setSizeC(s(29, 35))
+    prey.setPosition(p(500, 200))
+    prey.setVisible(true)
+  }
+  if(isGrabbed){
+    if(key.isPress('G')){
+      text.setText(" ")
+      prey.setVisible(false)
+      prey.setPosition(p(3000, 3000))
+      isGrabbed = false
+      player.scale(1.5)
+    }
+  }
+}
+
+
+var COLLISION = function () {
+  for (var i in rect) {
+    if (rect[i].isStaticIntersect( player.getStaticBoxA(-speed, 0, speed))) {	
+      if (dx==-speed) {
+        dx=0;
+        player.setPosition(p(rect[i].x+rect[i].w, player.y))
+      }
+    }
+    if (rect[i].isStaticIntersect( player.getStaticBoxD(0, 0, speed))) {	
+      if (dx==speed) {
+        dx=0;
+        player.setPosition(p(rect[i].x-player.w, player.y))
+      }
+    }	
+    if (rect[i].isStaticIntersect( player.getStaticBoxW(0, -speed, 0, speed))) {	
+      if (dy==-speed) {
+        dy=0;
+        player.setPosition(p(player.x, rect[i].y+rect[i].h))
+      }
+    }	
+    if (rect[i].isStaticIntersect( player.getStaticBoxS(0, 0, 0, speed))) {	
+      if (dy==speed) {
+        dy=0;
+        player.setPosition(p(player.x, rect[i].y-player.h))
+      }
+    }
+  }
+}
+
+game.newLoop('myGame', function () {
+  CONTROLS();
+  COLLISION();
+  if (prey.isStaticIntersect( player.getStaticBox())) {	
+    text.setText("Prey is grabbed. \n Press \"G\" to swallow and digest")
+    prey.setPosition(player.getPositionC())
+    isGrabbed = true
+  }
+  player.move(p(dx, dy));
+  rect1.draw(); rect2.draw(); rect3.draw();  rect4.draw(); rect5.draw(); rect6.draw(); rect7.draw(); player.draw(); prey.draw(); text.draw();
+})
+
+game.setLoop('myGame');
+game.start();
+
+</script>
+
+</body>
+</html>
